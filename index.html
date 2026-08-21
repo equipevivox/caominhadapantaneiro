@@ -17,7 +17,23 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body class="boot-active">
+    <div class="boot-screen" data-boot-screen aria-label="Animação de abertura">
+      <video
+        class="boot-video"
+        data-boot-video
+        data-src-desktop="Elementos/boot-desktop.mp4"
+        data-src-mobile="Elementos/boot-smartphone.mp4"
+        autoplay
+        muted
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+      ></video>
+      <button class="boot-skip" type="button" data-boot-skip disabled>Pular abertura</button>
+    </div>
+    <noscript><style>.boot-screen { display: none !important; } body.boot-active { overflow: auto; }</style></noscript>
+
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
     <header class="site-header" data-header>

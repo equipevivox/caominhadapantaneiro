@@ -24,4 +24,5 @@ Para as fotos da timeline, substitua cada bloco `.photo-slot--timeline` por uma 
 - `styles.css`: identidade visual, responsividade e animações.
 - `script.js`: menu móvel, cabeçalho e animações de entrada.
 - `Elementos/`: texturas decorativas fornecidas.
+- `Elementos/boot-desktop.mp4` e `Elementos/boot-smartphone.mp4`: animação de abertura responsiva.
 - `pantaneiro-logomarca.svg` e `caominhada-logomarca.svg`: marcas fornecidas.
