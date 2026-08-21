@@ -72,6 +72,139 @@ window.addEventListener('resize', () => {
   if (window.innerWidth > 820) setMenu(false);
 });
 
+const customScrollbar = document.querySelector('[data-custom-scrollbar]');
+const scrollbarThumb = document.querySelector('[data-scrollbar-thumb]');
+if (customScrollbar && scrollbarThumb) document.documentElement.classList.add('custom-scrollbar-ready');
+let smoothScrollFrame = 0;
+let smoothScrollTarget = window.scrollY;
+let smoothScrollStart = window.scrollY;
+let smoothScrollStartedAt = 0;
+let isSmoothScrolling = false;
+let scrollbarMetrics = { maxScroll: 0, travel: 0 };
+let scrollbarDragStart = null;
+
+const getMaxScroll = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+const cancelSmoothScroll = () => {
+  window.cancelAnimationFrame(smoothScrollFrame);
+  smoothScrollFrame = 0;
+  smoothScrollStartedAt = 0;
+  isSmoothScrolling = false;
+};
+
+const runSmoothScroll = (timestamp) => {
+  const distance = smoothScrollTarget - smoothScrollStart;
+  const progress = Math.min(1, Math.max(0, (timestamp - smoothScrollStartedAt) / 420));
+  const easedProgress = progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+  if (progress >= 1 || Math.abs(distance) < 0.5) {
+    window.scrollTo(0, smoothScrollTarget);
+    smoothScrollFrame = 0;
+    smoothScrollStartedAt = 0;
+    isSmoothScrolling = false;
+    return;
+  }
+
+  window.scrollTo(0, smoothScrollStart + distance * easedProgress);
+  smoothScrollFrame = window.requestAnimationFrame(runSmoothScroll);
+};
+
+const hasScrollableParent = (element) => {
+  let current = element instanceof Element ? element : null;
+
+  while (current && current !== document.body) {
+    const style = window.getComputedStyle(current);
+    if (/(auto|scroll)/.test(style.overflowY) && current.scrollHeight > current.clientHeight) return true;
+    current = current.parentElement;
+  }
+
+  return false;
+};
+
+window.addEventListener('wheel', (event) => {
+  if (reducedMotion || document.body.classList.contains('boot-active') || document.body.classList.contains('menu-open')) return;
+  if (event.ctrlKey || event.defaultPrevented || Math.abs(event.deltaX) > Math.abs(event.deltaY) || hasScrollableParent(event.target)) return;
+
+  event.preventDefault();
+  const unit = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16 : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? window.innerHeight : 1;
+  const maxScroll = getMaxScroll();
+  smoothScrollStart = window.scrollY;
+  smoothScrollTarget = Math.min(maxScroll, Math.max(0, smoothScrollTarget + event.deltaY * unit));
+  smoothScrollStartedAt = performance.now();
+
+  if (!smoothScrollFrame) {
+    isSmoothScrolling = true;
+    smoothScrollFrame = window.requestAnimationFrame(runSmoothScroll);
+  }
+}, { passive: false });
+
+const syncCustomScrollbar = () => {
+  if (!customScrollbar || !scrollbarThumb) return;
+
+  const viewportHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
+  const trackHeight = Math.max(0, viewportHeight - 6);
+  const maxScroll = Math.max(0, documentHeight - viewportHeight);
+  const thumbHeight = maxScroll > 0 ? Math.max(48, trackHeight * (viewportHeight / documentHeight)) : trackHeight;
+  const travel = Math.max(0, trackHeight - thumbHeight);
+  const offset = maxScroll > 0 ? travel * (window.scrollY / maxScroll) : 0;
+
+  scrollbarMetrics = { maxScroll, travel };
+  customScrollbar.classList.toggle('is-scrollable', maxScroll > 1);
+  customScrollbar.style.setProperty('--scrollbar-thumb-height', `${thumbHeight}px`);
+  customScrollbar.style.setProperty('--scrollbar-thumb-offset', `${offset}px`);
+
+  if (!isSmoothScrolling && !scrollbarDragStart) smoothScrollTarget = window.scrollY;
+};
+
+scrollbarThumb?.addEventListener('pointerdown', (event) => {
+  if (!scrollbarMetrics.maxScroll || !scrollbarMetrics.travel) return;
+  cancelSmoothScroll();
+  scrollbarDragStart = { pointerY: event.clientY, scrollY: window.scrollY };
+  scrollbarThumb.setPointerCapture(event.pointerId);
+  event.preventDefault();
+});
+
+scrollbarThumb?.addEventListener('pointermove', (event) => {
+  if (!scrollbarDragStart) return;
+  const pointerDelta = event.clientY - scrollbarDragStart.pointerY;
+  const scrollDelta = (pointerDelta / scrollbarMetrics.travel) * scrollbarMetrics.maxScroll;
+  smoothScrollTarget = Math.min(scrollbarMetrics.maxScroll, Math.max(0, scrollbarDragStart.scrollY + scrollDelta));
+  window.scrollTo(0, smoothScrollTarget);
+});
+
+const finishScrollbarDrag = (event) => {
+  if (!scrollbarDragStart) return;
+  scrollbarDragStart = null;
+  if (scrollbarThumb?.hasPointerCapture(event.pointerId)) scrollbarThumb.releasePointerCapture(event.pointerId);
+};
+
+scrollbarThumb?.addEventListener('pointerup', finishScrollbarDrag);
+scrollbarThumb?.addEventListener('pointercancel', finishScrollbarDrag);
+
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    if (reducedMotion) return;
+    const selector = link.getAttribute('href');
+    const destination = selector && selector !== '#' ? document.querySelector(selector) : null;
+    if (!destination) return;
+
+    event.preventDefault();
+    cancelSmoothScroll();
+    const headerOffset = header?.offsetHeight ?? 98;
+    const destinationY = destination.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({ top: Math.max(0, destinationY), behavior: 'smooth' });
+    window.history.pushState(null, '', selector);
+  });
+});
+
+syncCustomScrollbar();
+window.addEventListener('scroll', syncCustomScrollbar, { passive: true });
+window.addEventListener('resize', syncCustomScrollbar);
+window.addEventListener('load', syncCustomScrollbar);
+
 function syncHeader() {
   header?.classList.toggle('is-scrolled', window.scrollY > 10);
 }
