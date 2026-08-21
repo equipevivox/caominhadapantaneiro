@@ -79,10 +79,14 @@ function syncHeader() {
 syncHeader();
 window.addEventListener('scroll', syncHeader, { passive: true });
 
-const revealItems = document.querySelectorAll('.reveal-on-scroll');
+const revealItems = document.querySelectorAll('.reveal-on-scroll:not(.timeline-item)');
+const timelineItems = document.querySelectorAll('.timeline-item.reveal-on-scroll');
+const timeline = document.querySelector('.timeline');
 
 if (reducedMotion || !('IntersectionObserver' in window)) {
   revealItems.forEach((item) => item.classList.add('is-visible'));
+  timelineItems.forEach((item) => item.classList.add('is-visible'));
+  timeline?.style.setProperty('--timeline-progress', '1');
 } else {
   const observer = new IntersectionObserver(
     (entries, currentObserver) => {
@@ -96,4 +100,33 @@ if (reducedMotion || !('IntersectionObserver' in window)) {
   );
 
   revealItems.forEach((item) => observer.observe(item));
+
+  const timelineObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      });
+    },
+    { rootMargin: '-10% 0px -10% 0px', threshold: 0.18 }
+  );
+
+  timelineItems.forEach((item) => timelineObserver.observe(item));
 }
+
+let timelineFrame;
+
+const updateTimelineProgress = () => {
+  if (!timeline || reducedMotion) return;
+
+  cancelAnimationFrame(timelineFrame);
+  timelineFrame = requestAnimationFrame(() => {
+    const bounds = timeline.getBoundingClientRect();
+    const startLine = window.innerHeight * 0.72;
+    const progress = Math.min(1, Math.max(0, (startLine - bounds.top) / Math.max(bounds.height, 1)));
+    timeline.style.setProperty('--timeline-progress', progress.toFixed(4));
+  });
+};
+
+updateTimelineProgress();
+window.addEventListener('scroll', updateTimelineProgress, { passive: true });
+window.addEventListener('resize', updateTimelineProgress);
