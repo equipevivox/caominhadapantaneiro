@@ -100,9 +100,23 @@
           </div>
 
           <div class="hero-visual reveal reveal--delay-2">
-            <!-- Substitua este bloco por: <img src="sua-foto-hero.jpg" alt="Participantes da Cãominhada caminhando com seus cães em Poconé"> -->
-            <div class="photo-slot photo-slot--hero" role="img" aria-label="Espaço reservado para a fotografia principal da Cãominhada">
-              <span><strong>Fotografia principal</strong>Insira aqui a imagem da Cãominhada</span>
+            <svg class="hero-clip-defs" width="0" height="0" aria-hidden="true" focusable="false">
+              <defs>
+                <clipPath id="hero-wave-clip" clipPathUnits="objectBoundingBox">
+                  <path d="M .19 0 H 1 V .91 C .88 .95 .77 .91 .66 .94 C .54 .98 .42 .95 .31 .96 C .18 .97 .09 .90 .05 .78 C .01 .65 .01 .45 .05 .29 C .08 .16 .13 .05 .19 0 Z" />
+                </clipPath>
+              </defs>
+            </svg>
+            <div class="hero-photo-frame">
+              <img
+                class="hero-photo"
+                src="Fotos das Cãominhadas/bg_hero.webp"
+                alt="Ilustração da Cãominhada em Poconé, com tutores caminhando ao lado de seus cães"
+                width="1839"
+                height="1536"
+                fetchpriority="high"
+                decoding="async"
+              />
             </div>
             <img class="decor decor--hero-paw" src="Elementos/pata2_1x.webp" alt="" aria-hidden="true" />
             <img class="decor decor--hero-leaf" src="Elementos/folha1_1x.webp" alt="" aria-hidden="true" />
@@ -138,10 +152,16 @@
 
           <div class="timeline" aria-label="Linha do tempo das edições da Cãominhada">
             <article class="timeline-item timeline-item--photo-left reveal-on-scroll">
-              <div class="timeline-photo polaroid polaroid--left tape--pink">
-                <!-- Substitua o .photo-slot por uma imagem da edição de 2019. -->
-                <div class="photo-slot photo-slot--timeline" role="img" aria-label="Espaço para fotografia da edição de 2019"><span>Foto de 2019</span></div>
-              </div>
+              <figure class="timeline-photo polaroid polaroid--left tape--pink">
+                <img
+                  src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2019_1x.webp"
+                  alt="Participantes da primeira Cãominhada reunidos em 2019"
+                  width="407"
+                  height="357"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
               <div class="timeline-marker" aria-hidden="true"><span class="paw-icon">●</span></div>
               <div class="timeline-copy">
                 <p class="edition-meta"><span class="year year--pink">2019</span><span>1ª edição</span></p>
@@ -157,14 +177,24 @@
                 <p>A Cãominhada retorna fortalecendo a participação da comunidade e ampliando as ações voltadas ao cuidado e à conscientização.</p>
               </div>
               <div class="timeline-marker timeline-marker--orange" aria-hidden="true"><span class="paw-icon">●</span></div>
-              <div class="timeline-photo polaroid polaroid--right tape--yellow">
-                <div class="photo-slot photo-slot--timeline" role="img" aria-label="Espaço para fotografia da edição de 2022"><span>Foto de 2022</span></div>
+              <div class="timeline-gallery" aria-label="Galeria de fotos da edição de 2022">
+                <figure class="timeline-photo polaroid polaroid--left tape--yellow">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2022_1_1x.webp" alt="Participantes da Cãominhada de 2022 reunidos com seus cães" width="189" height="189" loading="lazy" decoding="async" />
+                </figure>
+                <figure class="timeline-photo polaroid polaroid--right tape--pink">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2022_2_1x.webp" alt="Momento da edição de 2022 da Cãominhada" width="371" height="357" loading="lazy" decoding="async" />
+                </figure>
               </div>
             </article>
 
             <article class="timeline-item timeline-item--photo-left reveal-on-scroll">
-              <div class="timeline-photo polaroid polaroid--left tape--blue">
-                <div class="photo-slot photo-slot--timeline" role="img" aria-label="Espaço para fotografia da edição de 2023"><span>Foto de 2023</span></div>
+              <div class="timeline-gallery" aria-label="Galeria de fotos da edição de 2023">
+                <figure class="timeline-photo polaroid polaroid--left tape--blue">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2023_1_1x.webp" alt="Registro da identidade visual da Cãominhada de 2023" width="179" height="179" loading="lazy" decoding="async" />
+                </figure>
+                <figure class="timeline-photo polaroid polaroid--right tape--pink">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2023_2_1x.webp" alt="Grande encontro de participantes da Cãominhada de 2023" width="459" height="338" loading="lazy" decoding="async" />
+                </figure>
               </div>
               <div class="timeline-marker timeline-marker--orange" aria-hidden="true"><span class="paw-icon">●</span></div>
               <div class="timeline-copy">
@@ -181,14 +211,24 @@
                 <p>Premiações, apresentações e estações de orientação ampliam a experiência e ajudam a consolidar a Cãominhada como um encontro esperado pela cidade.</p>
               </div>
               <div class="timeline-marker" aria-hidden="true"><span class="paw-icon">●</span></div>
-              <div class="timeline-photo polaroid polaroid--right tape--pink">
-                <div class="photo-slot photo-slot--timeline" role="img" aria-label="Espaço para fotografia da edição de 2024"><span>Foto de 2024</span></div>
+              <div class="timeline-gallery" aria-label="Galeria de fotos da edição de 2024">
+                <figure class="timeline-photo polaroid polaroid--left tape--yellow">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2024_1_1x.webp" alt="Participantes caminhando na edição de 2024 da Cãominhada" width="190" height="190" loading="lazy" decoding="async" />
+                </figure>
+                <figure class="timeline-photo polaroid polaroid--right tape--pink">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2024_2_1x.webp" alt="Grupo reunido ao ar livre na Cãominhada de 2024" width="357" height="357" loading="lazy" decoding="async" />
+                </figure>
               </div>
             </article>
 
             <article class="timeline-item timeline-item--photo-left reveal-on-scroll">
-              <div class="timeline-photo polaroid polaroid--left tape--yellow">
-                <div class="photo-slot photo-slot--timeline" role="img" aria-label="Espaço para fotografia da edição de 2025"><span>Foto de 2025</span></div>
+              <div class="timeline-gallery" aria-label="Galeria de fotos da edição de 2025">
+                <figure class="timeline-photo polaroid polaroid--left tape--yellow">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2025_1_1x.webp" alt="Registro da identidade visual da Cãominhada de 2025" width="190" height="190" loading="lazy" decoding="async" />
+                </figure>
+                <figure class="timeline-photo polaroid polaroid--right tape--blue">
+                  <img src="Fotos das Cãominhadas/export_2026-08-21T13_50_56-647Z/2025_2_1x.webp" alt="Participantes reunidos na quinta edição da Cãominhada em 2025" width="357" height="357" loading="lazy" decoding="async" />
+                </figure>
               </div>
               <div class="timeline-marker timeline-marker--yellow" aria-hidden="true"><span class="paw-icon">●</span></div>
               <div class="timeline-copy">
