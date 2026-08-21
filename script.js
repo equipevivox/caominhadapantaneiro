@@ -1,13 +1,8 @@
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const bootScreen = document.querySelector('[data-boot-screen]');
 const bootVideo = document.querySelector('[data-boot-video]');
-const bootSkip = document.querySelector('[data-boot-skip]');
 let bootFinished = false;
 let bootTimeout;
-
-function handleBootKeydown(event) {
-  if (event.key === 'Escape') finishBoot();
-}
 
 function finishBoot() {
   if (bootFinished) return;
@@ -15,8 +10,16 @@ function finishBoot() {
   window.clearTimeout(bootTimeout);
   bootScreen?.classList.add('is-leaving');
   document.body.classList.remove('boot-active');
-  document.removeEventListener('keydown', handleBootKeydown);
+  document.removeEventListener('pointerdown', enableBootAudio);
+  document.removeEventListener('keydown', enableBootAudio);
   window.setTimeout(() => bootScreen?.remove(), reducedMotion ? 0 : 460);
+}
+
+function enableBootAudio() {
+  if (!bootVideo || bootFinished) return;
+  bootVideo.muted = false;
+  bootVideo.volume = 0.5;
+  bootScreen?.classList.remove('needs-audio');
 }
 
 if (!bootScreen || !bootVideo || reducedMotion) {
@@ -24,22 +27,22 @@ if (!bootScreen || !bootVideo || reducedMotion) {
 } else {
   const mobileSource = window.matchMedia('(orientation: portrait)').matches;
   bootVideo.src = mobileSource ? bootVideo.dataset.srcMobile : bootVideo.dataset.srcDesktop;
-  bootVideo.defaultMuted = true;
-  bootVideo.muted = true;
+  bootVideo.defaultMuted = false;
+  bootVideo.muted = false;
+  bootVideo.volume = 0.5;
 
-  bootVideo.addEventListener('playing', () => {
-    bootScreen.classList.add('is-playing');
-    if (bootSkip) bootSkip.disabled = false;
-  }, { once: true });
   bootVideo.addEventListener('ended', finishBoot, { once: true });
   bootVideo.addEventListener('error', finishBoot, { once: true });
-  bootSkip?.addEventListener('click', finishBoot);
-
-  document.addEventListener('keydown', handleBootKeydown);
+  document.addEventListener('pointerdown', enableBootAudio, { once: true });
+  document.addEventListener('keydown', enableBootAudio, { once: true });
 
   bootTimeout = window.setTimeout(finishBoot, 8500);
   const playback = bootVideo.play();
-  playback?.catch(() => window.setTimeout(finishBoot, 350));
+  playback?.catch(() => {
+    bootVideo.muted = true;
+    bootScreen.classList.add('needs-audio');
+    bootVideo.play().catch(() => window.setTimeout(finishBoot, 350));
+  });
 }
 
 const header = document.querySelector('[data-header]');
