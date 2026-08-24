@@ -10,16 +10,18 @@ function finishBoot() {
   window.clearTimeout(bootTimeout);
   bootScreen?.classList.add('is-leaving');
   document.body.classList.remove('boot-active');
-  document.removeEventListener('pointerdown', enableBootAudio);
-  document.removeEventListener('keydown', enableBootAudio);
+  document.removeEventListener('pointerdown', unlockBootAudio);
+  document.removeEventListener('keydown', unlockBootAudio);
   window.setTimeout(() => bootScreen?.remove(), reducedMotion ? 0 : 460);
 }
 
-function enableBootAudio() {
+function unlockBootAudio() {
   if (!bootVideo || bootFinished) return;
   bootVideo.muted = false;
   bootVideo.volume = 0.5;
-  bootScreen?.classList.remove('needs-audio');
+  bootVideo.play().catch(() => {
+    bootVideo.muted = true;
+  });
 }
 
 if (!bootScreen || !bootVideo || reducedMotion) {
@@ -33,14 +35,13 @@ if (!bootScreen || !bootVideo || reducedMotion) {
 
   bootVideo.addEventListener('ended', finishBoot, { once: true });
   bootVideo.addEventListener('error', finishBoot, { once: true });
-  document.addEventListener('pointerdown', enableBootAudio, { once: true });
-  document.addEventListener('keydown', enableBootAudio, { once: true });
+  document.addEventListener('pointerdown', unlockBootAudio, { once: true });
+  document.addEventListener('keydown', unlockBootAudio, { once: true });
 
   bootTimeout = window.setTimeout(finishBoot, 8500);
   const playback = bootVideo.play();
   playback?.catch(() => {
     bootVideo.muted = true;
-    bootScreen.classList.add('needs-audio');
     bootVideo.play().catch(() => window.setTimeout(finishBoot, 350));
   });
 }

@@ -122,30 +122,6 @@ body.menu-open { overflow: hidden; }
   background: #fff;
 }
 
-.boot-audio-hint {
-  position: absolute;
-  right: 0;
-  bottom: max(22px, env(safe-area-inset-bottom));
-  left: 0;
-  margin: 0;
-  color: rgba(31, 31, 31, 0.62);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(6px);
-  pointer-events: none;
-  transition-property: opacity, transform;
-  transition-duration: 180ms;
-  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
-}
-
-.boot-screen.needs-audio { cursor: pointer; }
-.boot-screen.needs-audio .boot-audio-hint {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
