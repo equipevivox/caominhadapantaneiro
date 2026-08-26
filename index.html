@@ -16,6 +16,37 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script>
+      window.op = window.op || function () {
+        const queue = [];
+
+        return new Proxy(
+          function () {
+            if (arguments.length) queue.push([].slice.call(arguments));
+          },
+          {
+            get: function (_target, property) {
+              return property === "q"
+                ? queue
+                : function () {
+                    queue.push([property].concat([].slice.call(arguments)));
+                  };
+            },
+            has: function (_target, property) {
+              return property === "q";
+            },
+          }
+        );
+      }();
+
+      window.op("init", {
+        clientId: "62ccdf2b-6d79-4910-ab92-c8dd122b9643",
+        trackScreenViews: true,
+        trackOutgoingLinks: true,
+        trackAttributes: true,
+      });
+    </script>
+    <script src="https://openpanel.dev/op1.js" defer async></script>
   </head>
   <body class="boot-active">
     <div class="boot-screen" data-boot-screen aria-label="Animação de abertura">
