@@ -7,6 +7,7 @@
   'use strict';
 
   const API_URL = 'https://galeria-api-pantaneiro.equipeinvictusdigital.workers.dev/';
+  const GALLERY_URL = new URL('.', document.currentScript.src);
   const PAGE_SIZE = 28;
   const localPhotos = window.__BACKUP_PHOTOS__ || [];
   const localByName = new Map(localPhotos.map(photo => [photo.nome, photo]));
@@ -225,10 +226,12 @@
     });
     if (photo.thumbnail && photo.preview) {
       const ratio = Math.min(1, photo.width / photo.height);
-      img.srcset = `${photo.thumbnail} ${Math.round(480 * ratio)}w, ${photo.preview} ${Math.round(960 * ratio)}w`;
+      const thumbnail = new URL(photo.thumbnail, GALLERY_URL).href;
+      const preview = new URL(photo.preview, GALLERY_URL).href;
+      img.srcset = `${thumbnail} ${Math.round(480 * ratio)}w, ${preview} ${Math.round(960 * ratio)}w`;
       img.sizes = '(max-width: 640px) 100vw, 34vw';
     }
-    img.src = photo.thumbnail || photo.url;
+    img.src = photo.thumbnail ? new URL(photo.thumbnail, GALLERY_URL).href : photo.url;
     return tile;
   }
 
