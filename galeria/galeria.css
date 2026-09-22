@@ -912,6 +912,10 @@ button {
 }
 
 @media (max-width: 640px) {
+  .gallery-hero .hero-decor {
+    display: none;
+  }
+
   body {
     padding-top: 84px;
   }
